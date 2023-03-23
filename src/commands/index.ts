@@ -4,5 +4,5 @@ import play from './play.js'
 
 export default new Collection([
     ['ping', ping],
-    ['play', play]
+    ['play', play],
 ])

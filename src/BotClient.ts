@@ -1,11 +1,10 @@
 import { Client, GatewayIntentBits, Events, REST, Routes, Collection } from 'discord.js';
-import MusicPlayer from './MusicPlayer.js';
-import Command from 'commands/Command.js';
+import Command from './commands/Command.js';
+import { PlayerInteraction } from './types.js';
 
 class BotClient extends Client {
     private clientId: string
     private guildId: string
-    private player = new MusicPlayer(this)
     public commands!: Collection<string, Command>;
 
     // Underscore to avoid conflicts with the existing token property in the Client class
@@ -46,22 +45,19 @@ class BotClient extends Client {
     async refreshCommands() {
         try {
             const rest = new REST({ version: '10' }).setToken(this._token);
-            const clientCommands: Command[] = []
+            const clientCommands = this.commands.map((command) => {
+                return command
+            })
 
             console.log(`Comenzando a refrescar commandos slash 🔎`);
-                
-            this.commands.forEach((command) => {
-                clientCommands.push(command)
-            });
             
-    
             // The PUT method is used to fully refresh all commands in the guild with the current set
             await rest.put(
                 Routes.applicationGuildCommands(this.clientId, this.guildId),
                 { body: clientCommands },
             );
     
-            console.log(`se recargaron ${clientCommands.length} commandos slash 👌`);
+            console.log(`se refrescaron ${clientCommands.length} commandos slash 👌`);
         } catch (error) {
             console.log('error al refrescar:');
             
@@ -71,7 +67,7 @@ class BotClient extends Client {
     }
 
     setInteractionHandler() {
-        this.on(Events.InteractionCreate, async interaction => {
+        this.on(Events.InteractionCreate, async (interaction: PlayerInteraction) => {
             if (!interaction.isChatInputCommand()) return;
             
             const command = this.commands.get(interaction.commandName);

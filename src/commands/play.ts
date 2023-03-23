@@ -1,4 +1,7 @@
-import Command from "./Command.js";
+import { useMasterPlayer } from 'discord-player'
+import { PlayerInteraction } from "../types.js"
+import Command from "./Command.js"
+import {  } from "ytdl-core"
 
 export default new Command()
     .setName('play')
@@ -7,45 +10,35 @@ export default new Command()
         .setDescription('url o texto a buscar en youtube')
         .setRequired(true))
     .setDescription('Reproduce una cancion de youtubue')
-    .setInteractionHandler((_musicPlayer) => async (interaction) => {
-        if (!interaction.member.voice.channelId) return await interaction.reply({ content: "Flaco, metete a un canal primero", ephemeral: true });
-        
-        if (interaction.guild.members.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) return await interaction.reply({ content: "No estas en mi canal maestro", ephemeral: true });
-
-        const query = interaction.options.getString("query");
-
-        console.log('Se solicita reproducir:', query);
-
-        const queue = interaction.client.player.createQueue(interaction.guild, {
-            leaveOnEnd: false,
-            leaveOnStop: false,
-            leaveOnEmpty: false,
-            ytdlOptions: {
-                quality: "highest",
-                filter: "audioonly",
-                highWaterMark: 1 << 25,
-                dlChunkSize: 0,
-            },
-            metadata: {
-                channel: interaction.channel
-            }
-        });
-
-        // verify voice channel connection
-        try {
-            if (!queue.connection) await queue.connect(interaction.member.voice.channel);
-        } catch {
-            queue.destroy();
-            return await interaction.reply({ content: "No pude entrar a tu canal rey, disculpa", ephemeral: true });
+    .setInteractionHandler(async function (interaction: PlayerInteraction) {
+        const player = useMasterPlayer() // Get the player instance that we created earlier
+        const channel = interaction.member.voice.channel
+        if (!channel) {
+            await interaction.reply('You are not connected to a voice channel!') // make sure we have a voice channel
+            return
         }
-
-        await interaction.deferReply();
-        const track = await interaction.client.player.search(query, {
-            requestedBy: interaction.user
-        }).then(x => x.tracks[0]);
-        if (!track) return await interaction.followUp({ content: `❌ | Que puta pediste? No encontre nada con **${query}**` });
-
-        queue.play(track);
-
-        return await interaction.followUp({ content: `⏱️ | Bancame mientras cargo: **${track.title}**` });
+        const query = interaction.options.getString('query', true) // we need input/query to play
+    
+        // let's defer the interaction as things can take time to process
+        await interaction.deferReply()
+        const searchResult = await player.search(query, { requestedBy: interaction.user })
+    
+        if (!searchResult.hasTracks()) {
+            // If player didn't find any songs for this query
+            await interaction.editReply(`Wtf no encontre nada buscando: ${query}!`)
+            return
+        } else {
+            try {
+                await player.play(channel, searchResult, {
+                    nodeOptions: {
+                        metadata: interaction // we can access this metadata object using queue.metadata later on
+                    }
+                })
+                await interaction.editReply(`Aber banca que busco 🔎`)
+            } catch (e) {
+                // let's return error if something failed
+                await interaction.followUp(`Uh wachin, se rompio todo: ${e}`)
+                return
+            }
+        }
     })
