@@ -1,8 +1,8 @@
 import { Collection } from 'discord.js'
-import ping from './ping.js'
 import play from './play.js'
+import skip from './skip.js'
 
 export default new Collection([
-    ['ping', ping],
     ['play', play],
+    ['skip', skip],
 ])

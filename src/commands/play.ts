@@ -1,7 +1,6 @@
 import { useMasterPlayer } from 'discord-player'
 import { PlayerInteraction } from "../types.js"
 import Command from "./Command.js"
-import {  } from "ytdl-core"
 
 export default new Command()
     .setName('play')
@@ -31,10 +30,11 @@ export default new Command()
             try {
                 await player.play(channel, searchResult, {
                     nodeOptions: {
+                        leaveOnEnd: false,
                         metadata: interaction // we can access this metadata object using queue.metadata later on
                     }
                 })
-                await interaction.editReply(`Aber banca que busco 🔎`)
+                await interaction.editReply(`Aber banca que busco 🔎: ${query}`)
             } catch (e) {
                 // let's return error if something failed
                 await interaction.followUp(`Uh wachin, se rompio todo: ${e}`)
