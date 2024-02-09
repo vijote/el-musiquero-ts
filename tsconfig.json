@@ -1,13 +1,17 @@
 {
-    "compilerOptions": {
-        "module": "NodeNext",
-        "moduleResolution": "nodenext",
-        "target": "ES2020",
-        "sourceMap": true,
-        "outDir": "dist"
-    },
-    "include": ["src/**/*"],
-    "ts-node": {
-        "esm": true
-    }
+  "ts-node": {
+    "files": true
+  },
+  "files": [
+    "src/filters.d.ts"
+  ],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "strict": true,
+    "outDir": "dist"
+  },
+  "include": ["src/**/*"],
 }

@@ -1,15 +1,14 @@
-import { Channel } from "diagnostics_channel"
 import { GuildQueue } from "discord-player"
-import { ChatInputCommandInteraction, GuildMember } from "discord.js"
-import BotClient from "./BotClient.js"
+import { ChatInputCommandInteraction, GuildMember, GuildChannel } from "discord.js"
+import BotClient from "./BotClient"
 
-export type PlayerQueue = GuildQueue & {
-    metadata: {
-        channel: Channel & {
-            send: (text: string) => void
-        }
+export type ChannelTest = {
+    channel: GuildChannel & {
+        send: (text: string) => void
     }
 }
+
+export type PlayerQueue = GuildQueue<ChannelTest>
 
 export type PlayerInteraction = ChatInputCommandInteraction & {
     client: BotClient,

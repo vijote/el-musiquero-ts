@@ -1,6 +1,7 @@
-import { Client, GatewayIntentBits, Events, REST, Routes, Collection } from 'discord.js';
-import Command from './commands/Command.js';
-import { PlayerInteraction } from './types.js';
+import { Client, GatewayIntentBits, Events, REST, Routes, Collection, Interaction } from 'discord.js';
+import { AudioFilters } from "discord-player";
+import Command from './commands/Command';
+import { PlayerInteraction } from './types';
 
 class BotClient extends Client {
     private clientId: string
@@ -25,6 +26,7 @@ class BotClient extends Client {
 
         this.setOnClientReadyHandler()
         this.setInteractionHandler()
+        this.setAudioFilters()
     }
 
     private setOnClientReadyHandler() {
@@ -32,6 +34,14 @@ class BotClient extends Client {
         this.once(Events.ClientReady, client => {
             console.log(`${client.user.tag} ya esta listo para esos rolones 👾`)
         });
+    }
+
+    private setAudioFilters() {
+        AudioFilters.define("speed1", "atempo=1.5")
+        AudioFilters.define("speed1.25", "atempo=1.25")
+        AudioFilters.define("speed1.5", "atempo=1.5")
+        AudioFilters.define("speed1.75", "atempo=1.75")
+        AudioFilters.define("speed2", "atempo=2")
     }
 
     logIn() {
@@ -67,7 +77,7 @@ class BotClient extends Client {
     }
 
     setInteractionHandler() {
-        this.on(Events.InteractionCreate, async (interaction: PlayerInteraction) => {
+        this.on(Events.InteractionCreate, async (interaction: Interaction) => {
             if (!interaction.isChatInputCommand()) return;
             
             const command = this.commands.get(interaction.commandName);
@@ -78,7 +88,7 @@ class BotClient extends Client {
             }
         
             try {
-                await command.execute(interaction);
+                await command.execute(interaction as PlayerInteraction);
             } catch (error) {
                 console.error(error);
                 await interaction.reply({ content: 'Exploto todo mientras hacia lo que me pediste', ephemeral: true });

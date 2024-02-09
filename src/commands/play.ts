@@ -1,6 +1,6 @@
 import { useMasterPlayer } from 'discord-player'
-import { PlayerInteraction } from "../types.js"
-import Command from "./Command.js"
+import { PlayerInteraction } from "../types"
+import Command from "./Command"
 
 export default new Command()
     .setName('play')
@@ -8,9 +8,12 @@ export default new Command()
         .setName('query')
         .setDescription('url o texto a buscar en youtube')
         .setRequired(true))
-    .setDescription('Reproduce una cancion de youtubue')
+    .setDescription('Reproduce una cancion de youtube')
     .setInteractionHandler(async function (interaction: PlayerInteraction) {
         const player = useMasterPlayer() // Get the player instance that we created earlier
+
+        if(!player) throw new Error("Player not set!")
+        
         const channel = interaction.member.voice.channel
         if (!channel) {
             await interaction.reply('You are not connected to a voice channel!') // make sure we have a voice channel
@@ -20,6 +23,8 @@ export default new Command()
     
         // let's defer the interaction as things can take time to process
         await interaction.deferReply()
+
+        await interaction.editReply(`Aber banca que busco 🔎: ${query}`)
         const searchResult = await player.search(query, { requestedBy: interaction.user })
     
         if (!searchResult.hasTracks()) {
@@ -34,7 +39,6 @@ export default new Command()
                         metadata: interaction // we can access this metadata object using queue.metadata later on
                     }
                 })
-                await interaction.editReply(`Aber banca que busco 🔎: ${query}`)
             } catch (e) {
                 // let's return error if something failed
                 await interaction.followUp(`Uh wachin, se rompio todo: ${e}`)

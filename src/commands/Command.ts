@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { PlayerInteractionHandler } from '../types.js';
+import { PlayerInteractionHandler } from '../types';
 
 class Command extends SlashCommandBuilder {
     public execute!: PlayerInteractionHandler;
