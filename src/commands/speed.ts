@@ -7,6 +7,7 @@ export default new Command()
     .addStringOption(option => option
         .setName('speed')
         .addChoices(
+            { name: '1', value: '1' },
             { name: '1.25', value: '1.25' },
             { name: '1.5', value: '1.5' },
             { name: '1.75', value: '1.75' },
