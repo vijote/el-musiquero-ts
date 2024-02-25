@@ -37,7 +37,7 @@ class BotClient extends Client {
     }
 
     private setAudioFilters() {
-        AudioFilters.define("speed1", "atempo=1.5")
+        AudioFilters.define("speed1", "atempo=1")
         AudioFilters.define("speed1.25", "atempo=1.25")
         AudioFilters.define("speed1.5", "atempo=1.5")
         AudioFilters.define("speed1.75", "atempo=1.75")
