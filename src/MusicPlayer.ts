@@ -17,6 +17,7 @@ class MusicPlayer extends Player {
         this.setEmptyQueueHandler()
         this.setPlayerSkipHandler()
         this.setOnTrackEndHandler()
+        this.loadExtractors()
     }
 
     private setOnErrorHandler() {
@@ -32,14 +33,6 @@ class MusicPlayer extends Player {
     }
 
     private setOnTrackStartHandler() {
-        /*
-        Argument of type '(queue: PlayerQueue, track: Track) => void' is not assignable to parameter of type '(queue: GuildQueue<unknown>, track: Track) => unknown'.
-            Types of parameters 'queue' and 'queue' are incompatible.
-                Type 'GuildQueue<unknown>' is not assignable to type 'PlayerQueue'.
-                Type 'GuildQueue<unknown>' is not assignable to type '{ metadata: { channel: Channel & { send: (text: string) => void; }; }; }'.
-                    Types of property 'metadata' are incompatible.
-                    Type 'unknown' is not assignable to type '{ channel: Channel & { send: (text: string) => void; }; }'.ts(2345)
-          */
         this.events.on('playerStart', (queue: GuildQueue, track) => {
             return (queue as PlayerQueue).metadata.channel.send(`Suena ahora: **${track.title}** | 🎶`)
         })
@@ -61,6 +54,10 @@ class MusicPlayer extends Player {
         this.events.on('emptyQueue', (queue: GuildQueue) => {
             (queue as PlayerQueue).metadata.channel.send(`No hay mas canciones para reproducir`);
         });
+    }
+
+    private loadExtractors() {
+        this.extractors.loadDefault(ext => ext === 'YouTubeExtractor')
     }
 }
 

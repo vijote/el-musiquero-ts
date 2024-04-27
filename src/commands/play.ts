@@ -1,4 +1,4 @@
-import { useMasterPlayer } from 'discord-player'
+import { useMainPlayer } from 'discord-player'
 import { PlayerInteraction } from "../types"
 import Command from "./Command"
 
@@ -10,7 +10,7 @@ export default new Command()
         .setRequired(true))
     .setDescription('Reproduce una cancion de youtube')
     .setInteractionHandler(async function (interaction: PlayerInteraction) {
-        const player = useMasterPlayer() // Get the player instance that we created earlier
+        const player = useMainPlayer() // Get the player instance that we created earlier
 
         if(!player) throw new Error("Player not set!")
         
