@@ -14,8 +14,8 @@
     "discord.js": "14.14.1",
     "dotenv": "16.4.5",
     "ffmpeg": "0.0.4",
-    "opusscript": "0.1.1",
-    "youtube-ext": "1.1.23"
+    "mediaplex": "0.0.9",
+    "ytdl-core": "4.11.5"
   },
   "devDependencies": {
     "@types/node": "20.12.7",
