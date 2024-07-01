@@ -1,4 +1,4 @@
-import { AudioFilters, QueueFilters, useQueue } from 'discord-player'
+import { QueueFilters, useQueue } from 'discord-player'
 import { PlayerInteraction } from "../types"
 import Command from "./Command"
 
@@ -17,11 +17,11 @@ export default new Command()
         .setRequired(true))
     .setDescription('Sube la velocidad')
     .setInteractionHandler(async function (interaction: PlayerInteraction) {
-        if(!interaction.guild) throw new Error("Guild not set!")
+        if (!interaction.guild) throw new Error("Guild not set!")
 
         const queue = useQueue(interaction.guild.id);
 
-        if(!queue) throw new Error("Queue not set!")
+        if (!queue) throw new Error("Queue not set!")
 
         const speed = interaction.options.getString("speed")!
 
